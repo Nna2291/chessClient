@@ -11,3 +11,13 @@ class ImpossibleIndexException(BaseException):
 class BadFigureException(BaseException):
     def __str__(self) -> str:
         return 'Impossible name for figure'
+
+
+class ImpossibleMoveException(BaseException):
+    def __str__(self) -> str:
+        return 'Impossible move'
+
+
+class BadLetterException(BaseException):
+    def __str__(self) -> str:
+        return 'Incorrect Letter'
