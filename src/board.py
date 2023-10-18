@@ -1,9 +1,9 @@
 from string import ascii_uppercase
-from typing import Union
 
 from colorama import Fore, Style
 
 from src.exceptions import ImpossibleMoveException, NotAFigureException, NotYourFigureException
+from src.figures.bishop import Bishop
 from src.figures.figure import Figure
 from src.figures.pawn import Pawn
 from src.services import check_index
@@ -19,8 +19,12 @@ class Board:
             self.current_game.append(['*'] * self.len_x)
         self.current_game[1] = [Pawn(False)] * self.len_x
         self.current_game[-2] = [Pawn()] * self.len_x
+        self['c1'] = Bishop()
+        self['f1'] = Bishop()
+        self['c8'] = Bishop(False)
+        self['f8'] = Bishop(False)
 
-    def __getitem__(self, index) -> Union[str, Figure]:
+    def __getitem__(self, index) -> Figure.__subclasses__():
         """
         Get figure from board
 
@@ -78,22 +82,11 @@ class Board:
     def is_figure(self, index):
         return Figure in self[index].__class__.__bases__
 
-    def get_pawn_spaces(self, index: str, x: int, y: int):
-        spaces = []
-        for el in self[index].calculate_moves(y, x):
-            if not self.is_figure(el):
-                spaces.append(el)
-            else:
-                break
-        for el in self[index].calculate_beat(y, x):
-            if self.is_figure(el):
-                spaces.append(el)
-        return spaces
-
     def set_available_spaces(self, index: str, color: bool) -> bool:
         """
         Set available spaces for figure
 
+        :param color:
         :param index:
         :return: None
         """
@@ -104,7 +97,7 @@ class Board:
             raise NotYourFigureException
         spaces = self[index].calculate_moves(y, x)
         if type(self[index]) == Pawn:
-            spaces = self.get_pawn_spaces(index, x, y)
+            spaces = self[index].get_pawn_spaces(self, index, x, y)
         for space in spaces:
             if self.is_figure(space):
                 pass
@@ -118,7 +111,7 @@ class Board:
             raise NotYourFigureException
         spaces = self[old_index].calculate_moves(y, x)
         if type(self[old_index]) == Pawn:
-            spaces = self.get_pawn_spaces(old_index, x, y)
+            spaces = self[old_index].get_pawn_spaces(self, old_index, x, y)
         if new_index not in spaces:
             raise ImpossibleMoveException()
         for space in spaces:
