@@ -1,30 +1,12 @@
-from typing import TYPE_CHECKING
-
 from .figure import Figure
 from ..services import get_letter_index
-
-if TYPE_CHECKING:
-    from ..board import Board
 
 
 class Pawn(Figure):
     def __init__(self, blue: bool = True):
         super().__init__('P', blue)
 
-    @staticmethod
-    def get_pawn_spaces(board: 'Board', index: str, x: int, y: int):
-        spaces = []
-        for el in board[index].calculate_moves(y, x):
-            if not board.is_figure(el):
-                spaces.append(el)
-            else:
-                break
-        for el in board[index].calculate_beat(y, x):
-            if board.is_figure(el):
-                spaces.append(el)
-        return spaces
-
-    def calculate_moves(self, index: str, y: int, x: int) -> list[str]:
+    def calculate_moves(self, y: int, x: int) -> list[str]:
         indexes = []
         if self.blue:
             if y == 1:
