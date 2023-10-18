@@ -1,4 +1,4 @@
-from string import ascii_uppercase, ascii_lowercase
+from string import ascii_uppercase
 from typing import Union
 
 from colorama import Fore, Style
@@ -6,8 +6,11 @@ from colorama import Fore, Style
 from src.exceptions import ImpossibleMoveException, NotAFigureException, NotYourFigureException
 from src.figures.bishop import Bishop
 from src.figures.figure import Figure
+from src.figures.king import King
 from src.figures.knight import Knight
 from src.figures.pawn import Pawn
+from src.figures.queen import Queen
+from src.figures.rook import Rook
 from src.services import check_index
 
 
@@ -30,6 +33,17 @@ class Board:
         self['g1'] = Knight()
         self['b8'] = Knight(False)
         self['g8'] = Knight(False)
+
+        self['a1'] = Rook()
+        self['h1'] = Rook()
+        self['a8'] = Rook(False)
+        self['h8'] = Rook(False)
+
+        self['e1'] = King()
+        self['e8'] = King(False)
+
+        self['d1'] = Queen()
+        self['d8'] = Queen(False)
 
     def __getitem__(self, index) -> Union[str, Figure]:
         """
