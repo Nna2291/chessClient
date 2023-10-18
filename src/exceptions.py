@@ -21,3 +21,13 @@ class ImpossibleMoveException(BaseException):
 class BadLetterException(BaseException):
     def __str__(self) -> str:
         return 'Incorrect Letter'
+
+
+class NotAFigureException(BaseException):
+    def __str__(self) -> str:
+        return 'This is not a figure'
+
+
+class NotYourFigureException(BaseException):
+    def __str__(self) -> str:
+        return 'This is not your figure'

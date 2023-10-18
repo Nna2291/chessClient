@@ -16,4 +16,13 @@ class Pawn(Figure):
             if y == 6:
                 indexes.append((y - 2, x))
             indexes.append((y - 1, x))
+        indexes = self.check_moves(indexes)
+        return sorted(get_letter_index(x, y) for y, x in indexes)
+
+    def calculate_beat(self, y: int, x: int) -> list[str]:
+        if self.blue:
+            indexes = [(y + 1, x + 1), (y + 1, x - 1)]
+        else:
+            indexes = [(y - 1, x + 1), (y - 1, x - 1)]
+        indexes = self.check_moves(indexes)
         return [get_letter_index(x, y) for y, x in indexes]

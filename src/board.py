@@ -3,7 +3,7 @@ from typing import Union
 
 from colorama import Fore, Style
 
-from src.exceptions import ImpossibleMoveException
+from src.exceptions import ImpossibleMoveException, NotAFigureException, NotYourFigureException
 from src.figures.figure import Figure
 from src.figures.pawn import Pawn
 from src.services import check_index
@@ -75,7 +75,22 @@ class Board:
             elem
         )) for elem in game])
 
-    def set_available_spaces(self, index: str) -> None:
+    def is_figure(self, index):
+        return Figure in self[index].__class__.__bases__
+
+    def get_pawn_spaces(self, index: str, x: int, y: int):
+        spaces = []
+        for el in self[index].calculate_moves(y, x):
+            if not self.is_figure(el):
+                spaces.append(el)
+            else:
+                break
+        for el in self[index].calculate_beat(y, x):
+            if self.is_figure(el):
+                spaces.append(el)
+        return spaces
+
+    def set_available_spaces(self, index: str, color: bool) -> bool:
         """
         Set available spaces for figure
 
@@ -83,17 +98,32 @@ class Board:
         :return: None
         """
         x, y = check_index(index)
+        if not self.is_figure(index):
+            raise NotAFigureException
+        if not self[index].check_color(color):
+            raise NotYourFigureException
         spaces = self[index].calculate_moves(y, x)
+        if type(self[index]) == Pawn:
+            spaces = self.get_pawn_spaces(index, x, y)
         for space in spaces:
-            self[space] = '^'
+            if self.is_figure(space):
+                pass
+            else:
+                self[space] = '^'
+        return bool(spaces)
 
-    def make_move(self, old_index: str, new_index: str) -> None:
+    def make_move(self, old_index: str, new_index: str, color: bool) -> None:
         x, y = check_index(old_index)
+        if not self[old_index].check_color(color):
+            raise NotYourFigureException
         spaces = self[old_index].calculate_moves(y, x)
+        if type(self[old_index]) == Pawn:
+            spaces = self.get_pawn_spaces(old_index, x, y)
         if new_index not in spaces:
             raise ImpossibleMoveException()
         for space in spaces:
-            self[space] = '*'
+            if not self.is_figure(space):
+                self[space] = '*'
         self[new_index] = self[old_index]
         self[old_index] = '*'
 

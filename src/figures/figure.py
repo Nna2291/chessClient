@@ -1,20 +1,30 @@
 from colorama import Fore, Style
 
 
-class Figure:
+class Figure(object):
     def __init__(self, letter: str, blue: bool = True):
         self.blue = blue
         self.__letter = letter
 
-    def __str__(self):
         if self.blue:
-            return f'{Fore.BLUE}{self.__letter}{Style.RESET_ALL}'
-        return f'{Fore.RED}{self.__letter}{Style.RESET_ALL}'
+            self.__string = f'{Fore.BLUE}{self.__letter}{Style.RESET_ALL}'
+        else:
+            self.__string = f'{Fore.RED}{self.__letter}{Style.RESET_ALL}'
 
-    def __repr__(self):
-        if self.blue:
-            return f'{Fore.BLUE}{self.__letter}{Style.RESET_ALL}'
-        return f'{Fore.RED}{self.__letter}{Style.RESET_ALL}'
+    def __str__(self):
+        return self.__string
+
+    @staticmethod
+    def check_moves(indexes: list[tuple[int, int]]):
+        indexes = list(filter(lambda x: 0 <= x[0] <= 7 and 0 <= x[1] <= 7,
+                              indexes))
+        return indexes
 
     def calculate_moves(self, y: int, x: int) -> list[tuple[int, int]]:
         pass
+
+    def calculate_beat(self, y: int, x: int) -> list[tuple[int, int]]:
+        pass
+
+    def check_color(self, color: bool):
+        return color == self.blue
