@@ -1,10 +1,12 @@
-from string import ascii_uppercase
+from string import ascii_uppercase, ascii_lowercase
 from typing import Union
 
 from colorama import Fore, Style
 
 from src.exceptions import ImpossibleMoveException, NotAFigureException, NotYourFigureException
+from src.figures.bishop import Bishop
 from src.figures.figure import Figure
+from src.figures.knight import Knight
 from src.figures.pawn import Pawn
 from src.services import check_index
 
@@ -19,6 +21,15 @@ class Board:
             self.current_game.append(['*'] * self.len_x)
         self.current_game[1] = [Pawn(False)] * self.len_x
         self.current_game[-2] = [Pawn()] * self.len_x
+        self['c1'] = Bishop()
+        self['f1'] = Bishop()
+        self['c8'] = Bishop(False)
+        self['f8'] = Bishop(False)
+
+        self['b1'] = Knight()
+        self['g1'] = Knight()
+        self['b8'] = Knight(False)
+        self['g8'] = Knight(False)
 
     def __getitem__(self, index) -> Union[str, Figure]:
         """
@@ -36,7 +47,7 @@ class Board:
             BadIndexException: if index is not correct
         """
         x, y = check_index(index)
-        return self.current_game[self.len_y - y - 1][x]
+        return self.current_game[y][x]
 
     def __setitem__(self, index, value):
         """
@@ -55,7 +66,7 @@ class Board:
             BadIndexException: if index is not correct
         """
         x, y = check_index(index)
-        self.current_game[self.len_y - y - 1][x] = value
+        self.current_game[y][x] = value
 
     def __str__(self):
         """
@@ -75,25 +86,17 @@ class Board:
             elem
         )) for elem in game])
 
+    def get_by_index(self, y: int, x: int):
+        return self.current_game[y][x]
+
     def is_figure(self, index):
         return Figure in self[index].__class__.__bases__
 
-    def get_pawn_spaces(self, index: str, x: int, y: int):
-        spaces = []
-        for el in self[index].calculate_moves(y, x):
-            if not self.is_figure(el):
-                spaces.append(el)
-            else:
-                break
-        for el in self[index].calculate_beat(y, x):
-            if self.is_figure(el):
-                spaces.append(el)
-        return spaces
-
-    def set_available_spaces(self, index: str, color: bool) -> bool:
+    def set_available_spaces(self, index: str, color: bool) -> list[str]:
         """
         Set available spaces for figure
 
+        :param color:
         :param index:
         :return: None
         """
@@ -102,24 +105,22 @@ class Board:
             raise NotAFigureException
         if not self[index].check_color(color):
             raise NotYourFigureException
-        spaces = self[index].calculate_moves(self, index, y, x)
-        if type(self[index]) == Pawn:
-            spaces = self.get_pawn_spaces(index, x, y)
+        spaces = self[index].calculate_moves(y, x, self)
         for space in spaces:
             if self.is_figure(space):
                 pass
             else:
                 self[space] = '^'
-        return bool(spaces)
+        return spaces
 
     def make_move(self, old_index: str, new_index: str, color: bool) -> None:
         x, y = check_index(old_index)
         if not self[old_index].check_color(color):
             raise NotYourFigureException
-        spaces = self[old_index].calculate_moves(y, x)
-        if type(self[old_index]) == Pawn:
-            spaces = self.get_pawn_spaces(old_index, x, y)
+        spaces = self[old_index].calculate_moves(y, x, self)
         if new_index not in spaces:
+            raise ImpossibleMoveException()
+        if type(self[new_index]) != str and self[new_index].check_color(color):
             raise ImpossibleMoveException()
         for space in spaces:
             if not self.is_figure(space):
@@ -127,6 +128,7 @@ class Board:
         self[new_index] = self[old_index]
         self[old_index] = '*'
 
-    def show(self):
+    def show(self, spaces: list[str]):
         print("\033c", end="")
         print(self)
+        print(spaces)

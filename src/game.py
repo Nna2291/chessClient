@@ -10,7 +10,7 @@ def play_game(b: Board, color: bool):
             check_index(index)
             spaces = b.set_available_spaces(index, color)
             assert spaces
-            b.show()
+            b.show(spaces)
             break
         except BadIndexException:
             print('Invalid index!')
@@ -25,8 +25,8 @@ def play_game(b: Board, color: bool):
         new_index = input('Enter new index for figure: ').lower()
         try:
             b.make_move(index, new_index, color)
-            b.show()
+            b.show([])
             break
         except ImpossibleMoveException:
-            b.show()
+            b.show([])
             print('Impossible move!')

@@ -1,4 +1,8 @@
+from typing import Union
+
 from colorama import Fore, Style
+
+import src.board
 
 
 class Figure(object):
@@ -20,8 +24,7 @@ class Figure(object):
                               indexes))
         return indexes
 
-    @staticmethod
-    def calculate_moves(self, index: str, y: int, x: int) -> list[tuple[int, int]]:
+    def calculate_moves(self, y: int, x: int, board: 'src.board.Board') -> list[str]:
         pass
 
     def calculate_beat(self, y: int, x: int) -> list[tuple[int, int]]:

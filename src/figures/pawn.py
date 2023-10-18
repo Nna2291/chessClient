@@ -1,3 +1,4 @@
+import src.board
 from .figure import Figure
 from ..services import get_letter_index
 
@@ -6,23 +7,27 @@ class Pawn(Figure):
     def __init__(self, blue: bool = True):
         super().__init__('P', blue)
 
-    def calculate_moves(self, y: int, x: int) -> list[str]:
+    def calculate_moves(self, y: int, x: int, board: 'src.board.Board') -> list[str]:
         indexes = []
+        print(y, x)
         if self.blue:
-            if y == 1:
-                indexes.append((y + 2, x))
-            indexes.append((y + 1, x))
-        else:
-            if y == 6:
+            if y == 6 and type(board.get_by_index(y - 1, x)) == str:
                 indexes.append((y - 2, x))
             indexes.append((y - 1, x))
-        indexes = self.check_moves(indexes)
-        return sorted(get_letter_index(x, y) for y, x in indexes)
-
-    def calculate_beat(self, y: int, x: int) -> list[str]:
-        if self.blue:
-            indexes = [(y + 1, x + 1), (y + 1, x - 1)]
         else:
-            indexes = [(y - 1, x + 1), (y - 1, x - 1)]
-        indexes = self.check_moves(indexes)
+            if y == 1 and type(board.get_by_index(y + 1, x)) == str:
+                indexes.append((y + 2, x))
+            indexes.append((y + 1, x))
+        # indexes = self.check_moves(indexes)
+        # indexes = self.check_moves(indexes) + self.__calculate_beat(y, x, board)
+
         return [get_letter_index(x, y) for y, x in indexes]
+
+    # def __calculate_beat(self, y: int, x: int, board: 'src.board.Board') -> list[str]:
+    #     if self.blue:
+    #         indexes = [(y + 1, x + 1), (y + 1, x - 1)]
+    #     else:
+    #         indexes = [(y - 1, x + 1), (y - 1, x - 1)]
+    #     indexes = self.check_moves(indexes)
+    #     indexes = list(filter(lambda x: type(board.get_by_index(x[1], x[0])) != str, indexes))
+    #     return indexes
