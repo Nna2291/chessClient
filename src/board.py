@@ -95,7 +95,7 @@ class Board:
             raise NotAFigureException
         if not self[index].check_color(color):
             raise NotYourFigureException
-        spaces = self[index].calculate_moves(y, x)
+        spaces = self[index].calculate_moves(self, index, y, x)
         if type(self[index]) == Pawn:
             spaces = self[index].get_pawn_spaces(self, index, x, y)
         for space in spaces:

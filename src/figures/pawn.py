@@ -24,7 +24,7 @@ class Pawn(Figure):
                 spaces.append(el)
         return spaces
 
-    def calculate_moves(self, y: int, x: int) -> list[str]:
+    def calculate_moves(self, index: str, y: int, x: int) -> list[str]:
         indexes = []
         if self.blue:
             if y == 1:

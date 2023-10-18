@@ -12,8 +12,8 @@ def play_game(b: Board, color: bool):
             assert spaces
             b.show()
             break
-        # except BadIndexException:
-        #     print('Invalid index!')
+        except BadIndexException:
+            print('Invalid index!')
         except NotAFigureException:
             print('This is not a figure!')
         except NotYourFigureException:

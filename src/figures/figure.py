@@ -20,7 +20,8 @@ class Figure(object):
                               indexes))
         return indexes
 
-    def calculate_moves(self, y: int, x: int) -> list[tuple[int, int]]:
+    @staticmethod
+    def calculate_moves(self, index: str, y: int, x: int) -> list[tuple[int, int]]:
         pass
 
     def calculate_beat(self, y: int, x: int) -> list[tuple[int, int]]:

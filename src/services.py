@@ -19,7 +19,7 @@ def check_index(index) -> (int, int):
     """
     if len(index) != 2:
         raise BadIndexException()
-    if not index[0].isalpha() or not index[1].isdigit() or index[0].lower() not in ascii_lowercase:
+    if not index[0].isalpha() or not index[1].isdigit() or index[0].lower() not in ascii_lowercase[:8]:
         raise BadIndexException()
     x = ascii_lowercase.index(index[0].lower())
     y = int(index[1]) - 1
