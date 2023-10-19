@@ -3,9 +3,10 @@ from src.exceptions import BadIndexException, NotAFigureException, ImpossibleMov
 from src.services import check_index
 
 
-def play_game(b: Board, color: bool):
+def test_game(el, i, b):
+    color = i % 2 == 0
+    index = el[0]
     while True:
-        index = input('Enter figure index: ').lower()
         try:
             check_index(index)
             spaces = b.set_available_spaces(index, color)
@@ -14,22 +15,52 @@ def play_game(b: Board, color: bool):
             break
         except BadIndexException:
             print('Invalid index!')
+            break
         except NotAFigureException:
             print('This is not a figure!')
         except NotYourFigureException:
             print('This is not your figure!')
         except AssertionError:
             print('You cant move this figure!')
-
+    # time.sleep(5)
     while True:
-        new_index = input('Enter new index for figure: ').lower()
+        new_index = el[1]
         try:
             b.make_move(index, new_index, color)
             b.show([])
             break
         except ImpossibleMoveException:
-            b.show(spaces)
+            b.show([])
             print('Impossible move!')
+    # time.sleep(5)
 
-    with open('log.txt', 'a') as f:
-        f.write(f'{index}-{new_index}\n')
+
+def start(path, h):
+    moves = []
+
+    bo = Board()
+    bo.show([])
+
+    with open(path) as f:
+        for line in f.readlines():
+            line = line.replace('\n', '')
+            mpos1, mpos2 = line.split('-')
+            moves.append((mpos1, mpos2))
+
+    i = h
+    for el in moves:
+        test_game(el, i, bo)
+        i += 1
+        if bo.is_mate(i):
+            if (i - 1) % 2 == 0:
+                color = 'blue'
+            else:
+                color = 'red'
+            bo.show([], message=f'Mate! {color} wins!')
+
+
+start('test/test_4.txt', 0)
+start('test/test_1.txt', 0)
+start('test/test_2.txt', 0)
+start('test/test_3.txt', 0)
+start('test/test_5.txt', 0)

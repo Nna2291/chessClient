@@ -9,15 +9,16 @@ class Pawn(Figure):
 
     def calculate_moves(self, y: int, x: int, board: 'src.board.Board') -> list[str]:
         indexes = []
-        print(y, x)
         if self.blue:
-            if y == 6 and type(board.get_by_index(y - 1, x)) == str:
+            if type(board.get_by_index(y - 1, x)) == str:
+                indexes.append((y - 1, x))
+            if type(board.get_by_index(y - 2, x)) == str and y == 6:
                 indexes.append((y - 2, x))
-            indexes.append((y - 1, x))
         else:
-            if y == 1 and type(board.get_by_index(y + 1, x)) == str:
+            if type(board.get_by_index(y + 1, x)) == str:
+                indexes.append((y + 1, x))
+            if type(board.get_by_index(y + 2, x)) == str and y == 1:
                 indexes.append((y + 2, x))
-            indexes.append((y + 1, x))
         indexes = list(filter(lambda pos: 0 <= pos[0] <= 7 and 0 <= pos[1] <= 7, indexes))
         indexes = self.get_moves(indexes, board) + self.__calculate_beat(y, x, board)
 

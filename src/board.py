@@ -142,7 +142,40 @@ class Board:
         self[new_index] = self[old_index]
         self[old_index] = '*'
 
-    def show(self, spaces: list[str]):
+    def show(self, spaces: list[str], message: str = ''):
         print("\033c", end="")
         print(self)
-        print(spaces)
+        if spaces:
+            print(f'Possible moves: {", ".join(spaces)}')
+        if message:
+            print(message)
+
+    def fing_figure(self, color: bool, figure: Figure.__subclasses__() = None) -> list[Figure]:
+        answer = []
+
+        for row in range(len(self.current_game)):
+            for i in range(len(self.current_game[row])):
+                el = self.current_game[row][i]
+                if figure is not None:
+                    if type(el) == figure and el.check_color(color):
+                        answer.append((el, row, i))
+                elif type(el) != str and el.check_color(color):
+                    answer.append((el, row, i))
+
+        return answer
+
+    def is_mate(self, i: int):
+        color = i % 2 == 0
+        k, y, x = self.fing_figure(color, King)[0]
+        king_poses = k.calculate_moves(y, x, self)
+        if not king_poses:
+            return False
+        all_poses = self.fing_figure(not color)
+        for fig, y, x in all_poses:
+            free_spaces = fig.calculate_moves(y, x, self)
+            for el in free_spaces:
+                try:
+                    del king_poses[king_poses.index(el)]
+                except ValueError:
+                    continue
+        return not king_poses
