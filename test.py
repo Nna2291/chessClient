@@ -35,7 +35,8 @@ def test_game(el, i, b):
     # time.sleep(5)
 
 
-def start(path, h):
+def start(path):
+    i = 0
     moves = []
 
     bo = Board()
@@ -46,8 +47,6 @@ def start(path, h):
             line = line.replace('\n', '')
             mpos1, mpos2 = line.split('-')
             moves.append((mpos1, mpos2))
-
-    i = h
     for el in moves:
         test_game(el, i, bo)
         i += 1
@@ -59,8 +58,8 @@ def start(path, h):
             bo.show([], message=f'Mate! {color} wins!')
 
 
-start('test/test_4.txt', 0)
-start('test/test_1.txt', 0)
-start('test/test_2.txt', 0)
-start('test/test_3.txt', 0)
-start('test/test_5.txt', 0)
+start('test/test_4.txt')
+start('test/test_1.txt')
+start('test/test_2.txt')
+start('test/test_3.txt')
+start('test/test_5.txt')

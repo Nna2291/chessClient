@@ -1,5 +1,4 @@
 from string import ascii_uppercase
-from typing import Union
 
 from colorama import Fore, Style
 
@@ -45,7 +44,7 @@ class Board:
         self['d1'] = Queen()
         self['d8'] = Queen(False)
 
-    def __getitem__(self, index) -> Union[str, Figure]:
+    def __getitem__(self, index) -> Figure.__subclasses__():
         """
         Get figure from board
 
@@ -150,16 +149,16 @@ class Board:
         if message:
             print(message)
 
-    def fing_figure(self, color: bool, figure: Figure.__subclasses__() = None) -> list[Figure]:
+    def fing_figure(self, color: bool, figure: Figure.__subclasses__() = None) -> list[(Figure, int, int)]:
         answer = []
 
         for row in range(len(self.current_game)):
             for i in range(len(self.current_game[row])):
                 el = self.current_game[row][i]
                 if figure is not None:
-                    if type(el) == figure and el.check_color(color):
+                    if isinstance(el, figure) and el.check_color(color):
                         answer.append((el, row, i))
-                elif type(el) != str and el.check_color(color):
+                elif not isinstance(el, str) and el.check_color(color):
                     answer.append((el, row, i))
 
         return answer
