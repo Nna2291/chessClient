@@ -24,14 +24,15 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         if 'check' not in data.lower() and data:
             blue_ind, blue_new = data.split(';')[2], data.split(';')[3]
             place_figure(b, not color, blue_ind, blue_new)
-            if b.is_mate(color):
+            index, new_index = play_game(b, color)
+
+            if b.is_mate(not color):
                 if color:
                     col = 'red'
                 else:
                     col = 'blue'
                 b.show([], message=f'Mate! {col} wins!')
                 sys.exit(1)
-            index, new_index = play_game(b, color)
             answer = f'MOVE;{index};{new_index}'
             self.request.sendall(bytes(answer, 'utf-8'))
         else:

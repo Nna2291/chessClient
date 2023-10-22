@@ -13,6 +13,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 HOST = s.getsockname()[0]
 print(f'Your addr is {HOST}:{PORT}')
+HOST = '0.0.0.0'
 s.close()
 is_host = input('Are u host? [y/n]: ')
 
