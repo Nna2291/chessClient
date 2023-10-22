@@ -46,14 +46,14 @@ if is_host == 'n':
         quer = f'MOVE;{ip_second};{index};{new_index}'
         sock.sendall(bytes(quer, 'utf-8'))
         response = str(sock.recv(1024), 'utf-8')
-        red_ind, red_new = response.split(';')[1], response.split(';')[2]
-        place_figure(b, not color, red_ind, red_new)
-        if b.is_mate(not color):
-            if color:
+        try:
+            red_ind, red_new = response.split(';')[1], response.split(';')[2]
+            place_figure(b, not color, red_ind, red_new)
+            if b.is_mate(not color):
                 col = 'blue'
-            else:
-                col = 'red'
-            b.show([], message=f'Mate! {col} wins!')
+                b.show([], message=f'Mate! {col} wins!')
+        except IndexError:
+            b.show([], message=f'Mate! blue wins!')
 else:
     color = False
     print('Waiting for connection')

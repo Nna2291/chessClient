@@ -27,11 +27,10 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             index, new_index = play_game(b, color)
 
             if b.is_mate(not color):
-                if color:
-                    col = 'red'
-                else:
-                    col = 'blue'
+                col = 'red'
                 b.show([], message=f'Mate! {col} wins!')
+                answer = f'MOVE;{index};{new_index}'
+                self.request.sendall(bytes(answer, 'utf-8'))
                 sys.exit(1)
             answer = f'MOVE;{index};{new_index}'
             self.request.sendall(bytes(answer, 'utf-8'))
