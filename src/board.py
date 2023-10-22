@@ -1,4 +1,5 @@
 from string import ascii_uppercase
+from typing import Union
 
 from colorama import Fore, Style
 
@@ -163,8 +164,11 @@ class Board:
 
         return answer
 
-    def is_mate(self, i: int):
-        color = i % 2 == 0
+    def is_mate(self, i: Union[int, bool]):
+        if type(i) == bool:
+            color = i
+        else:
+            color = i % 2 == 0
         k, y, x = self.fing_figure(color, King)[0]
         king_poses = k.calculate_moves(y, x, self)
         if not king_poses:

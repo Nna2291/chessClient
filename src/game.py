@@ -1,16 +1,29 @@
+import sys
+
 from src.board import Board
 from src.exceptions import BadIndexException, NotAFigureException, ImpossibleMoveException, NotYourFigureException
 from src.services import check_index
 
 
+def set_figure(b: Board, color: bool, index: str):
+    check_index(index)
+    spaces = b.set_available_spaces(index, color)
+    assert spaces
+    b.show(spaces)
+    return spaces
+
+
+def place_figure(b: Board, color: bool, index: str, new_index: str):
+    b.make_move(index, new_index, color)
+    b.show([])
+
+
 def play_game(b: Board, color: bool):
+    b.show([])
     while True:
-        index = input('Enter figure index: ').lower()
         try:
-            check_index(index)
-            spaces = b.set_available_spaces(index, color)
-            assert spaces
-            b.show(spaces)
+            index = input('Enter first index: ')
+            spaces = set_figure(b, color, index)
             break
         except BadIndexException:
             print('Invalid index!')
@@ -22,14 +35,17 @@ def play_game(b: Board, color: bool):
             print('You cant move this figure!')
 
     while True:
-        new_index = input('Enter new index for figure: ').lower()
         try:
-            b.make_move(index, new_index, color)
-            b.show([])
+            new_index = input('Enter new index: ')
+            place_figure(b, color, index, new_index)
             break
         except ImpossibleMoveException:
-            b.show(spaces)
             print('Impossible move!')
-
-    with open('log.txt', 'a') as f:
-        f.write(f'{index}-{new_index}\n')
+    if b.is_mate(not color):
+        if color:
+            col = 'blue'
+        else:
+            col = 'red'
+        b.show([], message=f'Mate! {col} wins!')
+        return index, new_index
+    return index, new_index
